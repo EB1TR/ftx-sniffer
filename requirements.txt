@@ -1,0 +1,14 @@
+certifi==2024.12.14
+charset-normalizer==3.4.1
+environs==11.2.1
+geographiclib==2.0
+geopy==2.4.1
+idna==3.10
+maidenhead==1.7.0
+marshmallow==3.23.2
+mysql-connector==2.2.9
+packaging==24.2
+paho-mqtt==2.1.0
+python-dotenv==1.0.1
+requests==2.32.3
+urllib3==2.3.0

@@ -1,0 +1,10 @@
+services:
+  ftx-sniffer:
+    container_name: ftx-sniffer
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      #ENV PUBLIC
+      - ./produccion.env
