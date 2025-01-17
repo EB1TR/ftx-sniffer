@@ -194,7 +194,8 @@ def on_message_a(client, userdata, msg):
             COMPLETE[dato['rc']] = {'loc': dato['rl'], 'cont': dato['rco'], 'adif': dato['ra']}
             print(f'PSK: {dato}')
     except Exception as e:
-        print("SPOTS: " + str(e))
+        print("PSK: " + str(e))
+        print(msg.payload)
 # ----------------------------------------------------------------------------------------------------------------------
 
 
@@ -261,7 +262,7 @@ def on_message_b(client, userdata, msg):
                 to_db(dato)
                 print(f'RBN: {dato}')
     except Exception as e:
-        print("SPOTS: " + str(e))
+        print("RBN: " + str(e))
         print(msg.payload)
 # ----------------------------------------------------------------------------------------------------------------------
 
