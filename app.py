@@ -38,6 +38,7 @@ try:
     MQTT_HOST = settings.Config.MQTT_HOST
     MQTT_PORT = settings.Config.MQTT_PORT
     MQTT_KEEP = settings.Config.MQTT_KEEP
+    MQTT_RBN = settings.Config.MQTT_RBN
     TRACKING = settings.Config.TRACKING.split(',')
     RX = bool(settings.Config.RX)
     TX = bool(settings.Config.TX)
@@ -331,7 +332,7 @@ if __name__ == '__main__':
         # Instancia MQTT -----------------------------------------------------------------------------------------------
         #
         if PSK:
-            client1 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, userdata={"broker": MQTT_HOST}, protocol=mqtt.MQTTv5)
+            client1 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
             client1.on_connect = on_connect_a
             client1.on_message = on_message_a
             try:
@@ -341,11 +342,11 @@ if __name__ == '__main__':
             client1.loop_start()
 
         if RBN:
-            client2 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, userdata={"broker": "192.168.2.1"}, protocol=mqtt.MQTTv5)
+            client2 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
             client2.on_connect = on_connect_b
             client2.on_message = on_message_b
             try:
-                client2.connect("192.168.2.1", 1883, keepalive=60)
+                client2.connect(MQTT_RBN, 1883, keepalive=60)
             except Exception as e:
                 print(f"Error al conectar con el segundo broker: {e}")
             client2.loop_start()

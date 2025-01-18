@@ -33,6 +33,9 @@ class Config:
     if environ.get('MQTT_HOST'):
         MQTT_HOST = ENVIR('MQTT_HOST')
 
+    if environ.get('MQTT_RBN'):
+        MQTT_RBN = ENVIR('MQTT_RBN')
+
     if environ.get('MQTT_PORT'):
         MQTT_PORT = int(ENVIR('MQTT_PORT'))
 
