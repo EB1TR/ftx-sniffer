@@ -110,14 +110,17 @@ def on_connect_a(client, userdata, flags, rc, fe):
         print("MQTT A: Conectado")
         if len(TRACKING) > 0:
             for e in TRACKING:
-                e = e.replace('/', '.')
                 if TX and RX:
                     client.subscribe(f'pskr/filter/v2/+/+/{e}/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/{e}.P/#')
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/+/{e}.P/#')
                 elif RX and not TX:
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/+/{e}.P/#')
                 elif TX and not RX:
                     client.subscribe(f'pskr/filter/v2/+/+/{e}/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/{e}.P/#')
                 else:
                     print('Parámetro incorrecto de PATH')
                     exit(1)
@@ -139,14 +142,17 @@ def on_connect_b(client, userdata, flags, rc, fe):
         print("MQTT B: Conectado")
         if len(TRACKING) > 0:
             for e in TRACKING:
-                e = e.replace('/', '.')
                 if TX and RX:
                     client.subscribe(f'rbn/+/+/{e}/#')
+                    client.subscribe(f'rbn/+/+/{e}.P/#')
                     client.subscribe(f'rbn/+/+/+/{e}/#')
+                    client.subscribe(f'rbn/+/+/+/{e}.P/#')
                 elif RX and not TX:
+                    client.subscribe(f'rbn/+/+/+/{e}/#')
                     client.subscribe(f'rbn/+/+/+/{e}/#')
                 elif TX and not RX:
                     client.subscribe(f'rbn/+/+/{e}/#')
+                    client.subscribe(f'rbn/+/+/{e}.P/#')
                 else:
                     print('Parámetro incorrecto de PATH')
                     exit(1)
