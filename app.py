@@ -29,7 +29,7 @@ import settings
 # Entorno --------------------------------------------------------------------------------------------------------------
 #
 try:
-    VERSION = "20250116T2000Z"
+    VERSION = "20250123T1200Z"
     SQL = bool(settings.Config.SQL)
     DB_PASS = settings.Config.DB_PASS
     DB_HOST = settings.Config.DB_HOST
@@ -184,11 +184,11 @@ def on_message_a(client, userdata, msg):
         dato.pop('sq')
         dato.pop('f')
 
-        if msg.topic.split('/')[5] in TRACKING and msg.topic.split('/')[6] in TRACKING:
+        if msg.topic.split('/')[5].split('.')[0] in TRACKING and msg.topic.split('/')[6].split('.')[0] in TRACKING:
             dato['target'] = ''
-        elif msg.topic.split('/')[5] in TRACKING and not msg.topic.split('/')[6] in TRACKING:
+        elif msg.topic.split('/')[5].split('.')[0] in TRACKING and not msg.topic.split('/')[6].split('.')[0] in TRACKING:
             dato['target'] = msg.topic.split('/')[5]
-        elif not msg.topic.split('/')[5] in TRACKING and msg.topic.split('/')[6] in TRACKING:
+        elif not msg.topic.split('/')[5].split('.')[0] in TRACKING and msg.topic.split('/')[6].split('.')[0] in TRACKING:
             dato['target'] = msg.topic.split('/')[6]
         else:
             dato['target'] = ''
@@ -254,11 +254,11 @@ def on_message_b(client, userdata, msg):
             if dato['rl'] != "" and dato['sl'] != "":
                 dato['d'] = int(geopy.distance.geodesic(mh.to_location(dato['sl']), mh.to_location(dato['rl'])).km)
 
-            if data['dx'] in TRACKING and data['src'] in TRACKING:
+            if data['dx'].split('.')[0] in TRACKING and data['src'].split('.')[0] in TRACKING:
                 dato['target'] = ''
-            elif data['dx'] in TRACKING and not data['src'] in TRACKING:
+            elif data['dx'].split('.')[0] in TRACKING and not data['src'].split('.')[0] in TRACKING:
                 dato['target'] = data['dx']
-            elif not data['dx'] in TRACKING and data['src'] in TRACKING:
+            elif not data['dx'].split('.')[0] in TRACKING and data['src'].split('.')[0] in TRACKING:
                 dato['target'] = data['src']
             else:
                 dato['target'] = ''
