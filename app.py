@@ -197,8 +197,9 @@ def on_message_a(client, userdata, msg):
 
         if SQL and dato['b'] in [160, 80, 60, 40, 30, 20, 17, 15, 12, 10]:
             to_db(dato)
-            COMPLETE[dato['sc']] = {'loc': dato['sl'], 'cont': dato['sco'], 'adif': dato['sa']}
-            COMPLETE[dato['rc']] = {'loc': dato['rl'], 'cont': dato['rco'], 'adif': dato['ra']}
+            if RBN:
+                COMPLETE[dato['sc']] = {'loc': dato['sl'], 'cont': dato['sco'], 'adif': dato['sa']}
+                COMPLETE[dato['rc']] = {'loc': dato['rl'], 'cont': dato['rco'], 'adif': dato['ra']}
             print(f'PSK: {dato}')
     except Exception as e:
         print("PSK: " + str(e))
@@ -348,6 +349,11 @@ if __name__ == '__main__':
             client1.loop_start()
 
         if RBN:
+            # Historíco de indicativos ---------------------------------------------------------------------------------
+            #
+            loc_hist()
+            # ----------------------------------------------------------------------------------------------------------
+
             client2 = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
             client2.on_connect = on_connect_b
             client2.on_message = on_message_b
