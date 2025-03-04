@@ -29,7 +29,7 @@ import settings
 # Entorno --------------------------------------------------------------------------------------------------------------
 #
 try:
-    VERSION = "20250208T1200Z"
+    VERSION = "20250304T0900Z"
     SQL = bool(settings.Config.SQL)
     DB_PASS = settings.Config.DB_PASS
     DB_HOST = settings.Config.DB_HOST
@@ -81,9 +81,9 @@ def loc_hist():
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-# Persistencia a BDD ---------------------------------------------------------------------------------------------------
+# Persistencia a BDD GENERAL---------------------------------------------------------------------------------------------------
 #
-def to_db(dato):
+def to_db_general(dato):
     try:
         my_db = mysql.connector.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, database=DB_NAME)
         my_cursor = my_db.cursor()
@@ -98,7 +98,29 @@ def to_db(dato):
         my_cursor.close()
         my_db.close()
     except Exception as e:
-        print('Excepción en persistencia a BDD: %s' % e)
+        print('Excepción en persistencia a BDD GENERAL: %s' % e)
+        print(dato)
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+# Persistencia a BDD SONDA RX---------------------------------------------------------------------------------------------------
+#
+def to_db_sonda(dato):
+    try:
+        my_db = mysql.connector.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASS, database=DB_NAME)
+        my_cursor = my_db.cursor()
+        sql_cam = f'`md`, `rp`, `t`, `sc`, `sl`, `rc`, `rl`, `sa`, `ra`, `b`, `d`, `sco`, `rco`, `or`, `target`'
+        sql_val = (
+            f'"{dato["md"]}", {dato["rp"]}, {dato["t"]}, "{dato["sc"]}", "{dato["sl"]}", "{dato["rc"]}", '
+            f'"{dato["rl"]}", "{dato["sa"]}", "{dato["ra"]}", "{dato["b"]}", "{dato["d"]}", '
+            f'"{dato['sco']}", "{dato['rco']}", "{dato['or']}", "{dato['target']}"')
+        sql = f'INSERT INTO sonda_rx ({sql_cam}) VALUES ({sql_val})'
+        my_cursor.execute(sql)
+        my_db.commit()
+        my_cursor.close()
+        my_db.close()
+    except Exception as e:
+        print('Excepción en persistencia a BDD SONDA RX: %s' % e)
         print(dato)
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -167,7 +189,7 @@ def on_connect_b(client, userdata, flags, rc, fe):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-# Acciones al recibir mensaje MQTT -------------------------------------------------------------------------------------
+# Acciones al recibir mensaje MQTT PSKR --------------------------------------------------------------------------------
 #
 def on_message_a(client, userdata, msg):
     try:
@@ -196,7 +218,9 @@ def on_message_a(client, userdata, msg):
         dato = dict(sorted(dato.items()))
 
         if SQL and dato['b'] in [160, 80, 60, 40, 30, 20, 17, 15, 12, 10]:
-            to_db(dato)
+            to_db_general(dato)
+            if dato['rc'] == "EA1HFI.P":
+                to_db_sonda(dato)
             if RBN:
                 COMPLETE[dato['sc']] = {'loc': dato['sl'], 'cont': dato['sco'], 'adif': dato['sa']}
                 COMPLETE[dato['rc']] = {'loc': dato['rl'], 'cont': dato['rco'], 'adif': dato['ra']}
@@ -207,7 +231,7 @@ def on_message_a(client, userdata, msg):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-# Acciones al recibir mensaje MQTT -------------------------------------------------------------------------------------
+# Acciones al recibir mensaje MQTT RBN ---------------------------------------------------------------------------------
 #
 def on_message_b(client, userdata, msg):
     global COMPLETE
@@ -267,7 +291,9 @@ def on_message_b(client, userdata, msg):
             dato = dict(sorted(dato.items()))
 
             if SQL and dato['b'] in [160, 80, 60, 40, 30, 20, 17, 15, 12, 10]:
-                to_db(dato)
+                to_db_general(dato)
+                if dato['rc'] == "EA1HFI.P":
+                    to_db_sonda(dato)
                 print(f'RBN: {dato}')
     except Exception as e:
         print("RBN: " + str(e))
