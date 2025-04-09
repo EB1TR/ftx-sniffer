@@ -40,6 +40,7 @@ try:
     MQTT_KEEP = settings.Config.MQTT_KEEP
     MQTT_RBN = settings.Config.MQTT_RBN
     TRACKING = settings.Config.TRACKING.split(',')
+    SONDA = settings.Config.SONDA
     RX = bool(settings.Config.RX)
     TX = bool(settings.Config.TX)
     RBN = bool(settings.Config.RBN)
@@ -135,14 +136,18 @@ def on_connect_a(client, userdata, flags, rc, fe):
                 if TX and RX:
                     client.subscribe(f'pskr/filter/v2/+/+/{e}/#')
                     client.subscribe(f'pskr/filter/v2/+/+/{e}.P/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/{e}.R/#')
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}/#')
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}.P/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/+/{e}.R/#')
                 elif RX and not TX:
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}/#')
                     client.subscribe(f'pskr/filter/v2/+/+/+/{e}.P/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/+/{e}.R/#')
                 elif TX and not RX:
                     client.subscribe(f'pskr/filter/v2/+/+/{e}/#')
                     client.subscribe(f'pskr/filter/v2/+/+/{e}.P/#')
+                    client.subscribe(f'pskr/filter/v2/+/+/{e}.R/#')
                 else:
                     print('Parámetro incorrecto de PATH')
                     exit(1)
@@ -167,14 +172,18 @@ def on_connect_b(client, userdata, flags, rc, fe):
                 if TX and RX:
                     client.subscribe(f'rbn/+/+/{e}/#')
                     client.subscribe(f'rbn/+/+/{e}.P/#')
+                    client.subscribe(f'rbn/+/+/{e}.R/#')
                     client.subscribe(f'rbn/+/+/+/{e}/#')
                     client.subscribe(f'rbn/+/+/+/{e}.P/#')
+                    client.subscribe(f'rbn/+/+/+/{e}.R/#')
                 elif RX and not TX:
                     client.subscribe(f'rbn/+/+/+/{e}/#')
-                    client.subscribe(f'rbn/+/+/+/{e}/#')
+                    client.subscribe(f'rbn/+/+/+/{e}.P/#')
+                    client.subscribe(f'rbn/+/+/+/{e}.R/#')
                 elif TX and not RX:
                     client.subscribe(f'rbn/+/+/{e}/#')
                     client.subscribe(f'rbn/+/+/{e}.P/#')
+                    client.subscribe(f'rbn/+/+/{e}.R/#')
                 else:
                     print('Parámetro incorrecto de PATH')
                     exit(1)
@@ -219,7 +228,7 @@ def on_message_a(client, userdata, msg):
 
         if SQL and dato['b'] in [160, 80, 60, 40, 30, 20, 17, 15, 12, 10]:
             to_db_general(dato)
-            if dato['rc'] == "EA1HFI.P":
+            if dato['rc'] == SONDA:
                 to_db_sonda(dato)
             if RBN:
                 COMPLETE[dato['sc']] = {'loc': dato['sl'], 'cont': dato['sco'], 'adif': dato['sa']}

@@ -60,6 +60,9 @@ class Config:
     if environ.get('TRACKING'):
         TRACKING = ENVIR('TRACKING').upper()
 
+    if environ.get('SONDA'):
+        SONDA = ENVIR('SONDA')
+
     if environ.get('RX'):
         RX = int(ENVIR('RX'))
 
